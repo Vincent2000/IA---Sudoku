@@ -17,7 +17,10 @@ public ArrayList<Integer> getvaleursPossibles() {
 public void setvaleursPossibles(ArrayList<Integer> valeursPossibles) {
 	this.valeursPossibles = valeursPossibles;
 }
-
+public void ajouterValeur(int v)
+{
+	this.valeursPossibles.add(v);
+}
 public Case(int v)
 {
 	setValeur(v);

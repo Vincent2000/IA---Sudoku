@@ -8,6 +8,7 @@ public class Main {
 
 
 	public static Case[][] sudoku = new Case[9][9];
+	public static boolean rec=false;
 	
 	public static void chargerSudoku(String nomFichier) throws IOException
 	{
@@ -167,18 +168,23 @@ public class Main {
 	{
 		return RecursiveBacktracking();
 	}
+	@SuppressWarnings("unchecked")
 	public static boolean RecursiveBacktracking(/*int[][] copieSudoku*/)
 	{
 		if(Complet(sudoku))
 		{
-			sudoku=Copie(sudoku);
 			return true;
 		}
 		int[] temp=DH(sudoku);
 		int[]temp2=MRV(temp[1],temp[0],sudoku);
+		ArrayList<Integer> valeursPossiblestemp = new ArrayList<Integer>();
+		valeursPossiblestemp = (ArrayList<Integer>) (sudoku[temp2[0]][temp2[1]].getvaleursPossibles()).clone();
 		ArrayList<Integer> valeursPossibles= sudoku[temp2[0]][temp2[1]].Reduire(temp2[1],temp2[0],sudoku);
-		if(valeursPossibles.size()==0)
+		if(valeursPossibles.size()==0 && rec)
+		{
+			sudoku[temp2[0]][temp2[1]].setvaleursPossibles(valeursPossiblestemp);
 			return false;
+		}
 		else if (valeursPossibles.size()==1)
 		{
 			sudoku[temp2[0]][temp2[1]].setValeur(valeursPossibles.get(0));
@@ -188,11 +194,13 @@ public class Main {
 		else 
 		{
 			for (int valeur : valeursPossibles) {
-				sudoku[temp2[1]][temp2[0]].setValeur(valeur);
+				sudoku[temp2[0]][temp2[1]].setValeur(valeur);
+				rec=true;
 				if(RecursiveBacktracking())	
 				{
+					rec=false;
 					return true;
-				}	
+				}
 			}
 			return false;
 		}
@@ -209,7 +217,7 @@ public class Main {
 	public static void main(String args[]) {
 
 		try {
-			chargerSudoku("Sudoku2.txt");
+			chargerSudoku("Sudoku1.txt");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
