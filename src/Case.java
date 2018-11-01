@@ -18,16 +18,12 @@ public void setvaleursPossibles(ArrayList<Integer> valeursPossibles) {
 	this.valeursPossibles = valeursPossibles;
 }
 
-public Case()
-{
-	setValeur(0);
-	valeursPossibles=new ArrayList<Integer>();
-	for(int i=1;i<=9;i++)
-		valeursPossibles.add(i);
-}
 public Case(int v)
 {
 	setValeur(v);
+	if(v==0)
+		for(int i=1;i<=9;i++)
+			valeursPossibles.add(i);
 }
 public ArrayList<Integer> Reduire(int posX, int posY,Case[][]copieSudoku)
 {
