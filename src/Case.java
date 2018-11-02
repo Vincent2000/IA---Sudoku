@@ -2,8 +2,8 @@ import java.util.ArrayList;
 
 public class Case {
 
-private int valeur; 
-private ArrayList<Integer> valeursPossibles= new ArrayList<Integer>();
+	private int valeur;
+	private ArrayList<Integer> valeursPossibles = new ArrayList<Integer>();
 
 public int getValeur() {
 	return valeur;
@@ -51,20 +51,20 @@ public ArrayList<Integer> Reduire(int posX, int posY,Case[][]copieSudoku)
 		if(valeursPossibles.contains(copieSudoku[i][posX].getValeur())&&posY!=i)
 			valeursPossibles.remove(valeursPossibles.indexOf(copieSudoku[i][posX].getValeur()));
 	}
-	//carre
-	int[]posCarre=Main.debutCarre(posX,posY);
-	for(int i=posCarre[0];i<posCarre[0]+3;i++)
-	{
-		for(int j=posCarre[1];j<posCarre[1]+3;j++)
-		{
-			if(valeursPossibles.contains(copieSudoku[i][j].getValeur())&&posX!=j&&posY!=i)
-				valeursPossibles.remove(valeursPossibles.indexOf(copieSudoku[i][j].getValeur()));
-		}
-	}
 	
-	return valeursPossibles;
-}
+		// carre
+		int[] posCarre = Main.debutCarre(posX, posY);
+		for (int i = posCarre[0]; i < posCarre[0] + 3; i++) {
+			for (int j = posCarre[1]; j < posCarre[1] + 3; j++) {
+				if (valeursPossibles.contains(copieSudoku[i][j].getValeur()))
+					valeursPossibles.remove(valeursPossibles.indexOf(copieSudoku[i][j].getValeur()));
+			}
+		}
+
+		return valeursPossibles;
+	}
 
 
 
 }
+
