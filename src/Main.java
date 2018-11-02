@@ -152,7 +152,7 @@ public class Main {
 		}
 		int[] temp = DH(sudoku);
 		int[] temp2 = MRV(temp[1], temp[0], sudoku);
-		// AC3(temp2[0],temp2[1]);
+		AC3(temp2[1],temp2[0]);
 		ArrayList<Integer> valeursPossiblestemp = new ArrayList<Integer>();
 		valeursPossiblestemp = (ArrayList<Integer>) (sudoku[temp2[0]][temp2[1]].getvaleursPossibles()).clone();
 		ArrayList<Integer> valeursPossibles = sudoku[temp2[0]][temp2[1]].Reduire(temp2[1], temp2[0], sudoku);
@@ -163,7 +163,7 @@ public class Main {
 			return false;
 		} else if (valeursPossibles.size() == 1) {
 			sudoku[temp2[0]][temp2[1]].setValeur(valeursPossibles.get(0));
-			//AfficherC(sudoku);
+			AfficherC(sudoku);
 			boolean aRetourner = RecursiveBacktracking();
 			if (!rec)
 				return aRetourner;
@@ -179,7 +179,7 @@ public class Main {
 				sudoku[temp2[0]][temp2[1]].setValeur(valeur);
 				rec = true;
 				System.out.println("Récursion avec val : " + valeur);
-				//AfficherC(sudoku);
+				AfficherC(sudoku);
 				System.out.println("======================");
 				if (RecursiveBacktracking()) {
 					rec = false;
@@ -201,18 +201,19 @@ public class Main {
 		return aRetourner;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static boolean RemovedIV(Integer[] posCase) {
 		boolean removed = false;
-
+		Case[][] tempSudoku = Copie(sudoku);
+		ArrayList<Integer> tempValP=(ArrayList<Integer>) sudoku[posCase[0]][posCase[1]].getvaleursPossibles().clone();
 		for (int i : sudoku[posCase[0]][posCase[1]].getvaleursPossibles()) {
-			Case[][] tempSudoku = Copie(sudoku);
 			tempSudoku[posCase[0]][posCase[1]] = new Case(i);
-			if (tempSudoku[posCase[2]][posCase[3]].Reduire(posCase[2], posCase[3], tempSudoku) == null) {
-				System.out.println(",fker,vdfk,vk,dfkvndjfn");
-				sudoku[posCase[0]][posCase[1]].suppValeur(i);
+			if (tempSudoku[posCase[2]][posCase[3]].Reduire(posCase[2], posCase[3], tempSudoku).isEmpty()) {
+				tempValP.remove(tempValP.indexOf(i));
 				removed = true;
 			}
 		}
+		sudoku[posCase[0]][posCase[1]].setvaleursPossibles(tempValP);
 		return removed;
 	}
 
