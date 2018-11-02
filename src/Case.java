@@ -21,6 +21,11 @@ public void ajouterValeur(int v)
 {
 	this.valeursPossibles.add(v);
 }
+
+public void suppValeur(int v)
+{
+	this.valeursPossibles.remove(valeursPossibles.indexOf(v));
+}
 public Case(int v)
 {
 	setValeur(v);
@@ -34,7 +39,7 @@ public ArrayList<Integer> Reduire(int posX, int posY,Case[][]copieSudoku)
 	//Ligne
 	for(int j=0; j<9;j++)
 	{
-		if(valeursPossibles.contains(copieSudoku[posY][j].getValeur()))
+		if(valeursPossibles.contains(copieSudoku[posY][j].getValeur())&&posX!=j)
 		{
 			valeursPossibles.remove(valeursPossibles.indexOf(copieSudoku[posY][j].getValeur()));
 		}
@@ -43,7 +48,7 @@ public ArrayList<Integer> Reduire(int posX, int posY,Case[][]copieSudoku)
 	//colonne
 	for(int i=0; i<9;i++)
 	{
-		if(valeursPossibles.contains(copieSudoku[i][posX].getValeur()))
+		if(valeursPossibles.contains(copieSudoku[i][posX].getValeur())&&posY!=i)
 			valeursPossibles.remove(valeursPossibles.indexOf(copieSudoku[i][posX].getValeur()));
 	}
 	//carre
@@ -52,12 +57,14 @@ public ArrayList<Integer> Reduire(int posX, int posY,Case[][]copieSudoku)
 	{
 		for(int j=posCarre[1];j<posCarre[1]+3;j++)
 		{
-			if(valeursPossibles.contains(copieSudoku[i][j].getValeur()))
+			if(valeursPossibles.contains(copieSudoku[i][j].getValeur())&&posX!=j&&posY!=i)
 				valeursPossibles.remove(valeursPossibles.indexOf(copieSudoku[i][j].getValeur()));
 		}
 	}
 	
 	return valeursPossibles;
 }
+
+
 
 }

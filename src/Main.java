@@ -177,12 +177,17 @@ public class Main {
 		}
 		int[] temp=DH(sudoku);
 		int[]temp2=MRV(temp[1],temp[0],sudoku);
+		AC3(temp2[1],temp2[0]);
 		ArrayList<Integer> valeursPossiblestemp = new ArrayList<Integer>();
 		valeursPossiblestemp = (ArrayList<Integer>) (sudoku[temp2[0]][temp2[1]].getvaleursPossibles()).clone();
 		ArrayList<Integer> valeursPossibles= sudoku[temp2[0]][temp2[1]].Reduire(temp2[1],temp2[0],sudoku);
 		if(valeursPossibles.size()==0 && rec)
 		{
 			sudoku[temp2[0]][temp2[1]].setvaleursPossibles(valeursPossiblestemp);
+			return false;
+		}
+		else if(valeursPossibles.size()==0)
+		{
 			return false;
 		}
 		else if (valeursPossibles.size()==1)
@@ -214,6 +219,73 @@ public class Main {
 					aRetourner=false;
 		return aRetourner;
 	}
+	
+	public static boolean RemovedIV(Integer[] posCase)
+	{
+		boolean removed = false;
+		
+		for (int i : sudoku[posCase[0]][posCase[1]].getvaleursPossibles()) {
+			Case[][] tempSudoku = Copie(sudoku);
+			tempSudoku[posCase[0]][posCase[1]]=new Case(i);
+			if(tempSudoku[posCase[2]][posCase[3]].Reduire(posCase[2], posCase[3], tempSudoku)==null)
+			{
+				sudoku[posCase[0]][posCase[1]].suppValeur(i);
+				removed=true;
+			}
+		}
+		return removed;
+	}
+	
+	public static ArrayList<Integer[]> TrouverContrainte(int posX, int posY,Case[][]copieSudoku)
+	{
+		
+		ArrayList<Integer[]> pile = new ArrayList<Integer[]>();
+		
+		//Ligne
+		for(int j=0; j<9;j++)
+		{
+			if(copieSudoku[posY][j].getValeur()==0&&j!=posX)
+			{
+				pile.add(new Integer[] {posX, posY,j,posY});
+			}
+				
+		}
+		//colonne
+		for(int i=0; i<9;i++)
+		{
+			if(copieSudoku[i][posX].getValeur()==0&&i!=posY)
+				pile.add(new Integer[] {posX, posY,posX,i});
+		}
+		//carre
+		int[]posCarre=Main.debutCarre(posX,posY);
+		for(int i=posCarre[0];i<posCarre[0]+3;i++)
+		{
+			for(int j=posCarre[1];j<posCarre[1]+3;j++)
+			{
+				if(copieSudoku[i][j].getValeur()==0&&i!=posY&&j!=posX)
+					pile.add(new Integer[] {posX, posY,j,i});
+			}
+		}
+		
+		return pile;
+	}
+	
+	public static void AC3(int posX, int posY)
+	{
+		ArrayList<Integer[]> pile = new ArrayList<Integer[]>();
+		pile.addAll(TrouverContrainte(posX,posY,sudoku));
+		while(!pile.isEmpty())
+		{
+			if(RemovedIV(pile.get(0)))
+			{
+				pile.addAll(TrouverContrainte(pile.get(0)[2],pile.get(0)[3],sudoku));
+			}
+			pile.remove(0);
+		}
+	}
+	
+	
+	
 	public static void main(String args[]) {
 
 		try {
@@ -224,9 +296,11 @@ public class Main {
 		}
 		System.out.println("Avant : ");
 		Afficher();
-		BacktrackingSearch();
+		System.out.println("***********************************");
+		System.out.println(BacktrackingSearch());
 		System.out.println("Après : ");
 		Afficher();
+		
 
 	}
 
