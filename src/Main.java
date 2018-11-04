@@ -56,6 +56,7 @@ public class Main {
 	}
 
 	// MRV sur CARRE
+	//On recherche la case qui a le plus de voisins dans son carre
 	public static int[] MRV(int posX, int posY, Case[][] copieSudoku) {
 		int comptCasesPleines = 0;
 		int comptMax = 0;
@@ -66,11 +67,13 @@ public class Main {
 					comptCasesPleines++;
 
 			}
+			//Si la ligne n'est pas pleine alors on peut la considérer
 			if (comptMax < comptCasesPleines && comptCasesPleines < 3) {
 				comptMax = comptCasesPleines;
 				numLigne = i;
 			}
-			if (comptCasesPleines == 0) {
+			//Si la ligne est vide alors on choisit la dernière ligne vide
+			else if (comptCasesPleines == 0) {
 				comptMax = comptCasesPleines;
 				numLigne = i;
 			}
@@ -80,6 +83,7 @@ public class Main {
 
 	}
 
+	//On renvoie le carre qui a le plus de cases pleines
 	public static int RechercheCasesPleines(int posX, int posY, Case[][] copieSudoku) {
 		int comptCasesPleines = 0;
 		for (int i = posY; i < posY + 3; i++) {
@@ -88,11 +92,12 @@ public class Main {
 					comptCasesPleines++;
 			}
 		}
+		//Si le carre est rempli cela ne sert à rien d'y aller 
 		if (comptCasesPleines == 9)
 			comptCasesPleines = 0;
 		return comptCasesPleines;
 	}
-
+	//On recherche une case qui est vide dans un carre
 	public static int[] RechercheCaseVide(int numLigneSudoku, int posX, Case[][] copieSudoku) {
 		int[] aRetourner = new int[2];
 		for (int j = posX; j < posX + 3; j++) {
@@ -102,6 +107,7 @@ public class Main {
 		return aRetourner;
 	}
 
+	//On recherche le carre qui a le plus de contrainte
 	public static int[] DH(Case[][] copieSudoku) {
 		int maxValue = 0;
 		int[] posCarre = new int[] { 0, 0 };
@@ -152,7 +158,8 @@ public class Main {
 		}
 		int[] temp = DH(sudoku);
 		int[] temp2 = MRV(temp[1], temp[0], sudoku);
-		AC3(temp2[1],temp2[0]);
+		if(!rec)
+			AC3(temp2[1],temp2[0]);
 		ArrayList<Integer> valeursPossiblestemp = new ArrayList<Integer>();
 		valeursPossiblestemp = (ArrayList<Integer>) (sudoku[temp2[0]][temp2[1]].getvaleursPossibles()).clone();
 		ArrayList<Integer> valeursPossibles = sudoku[temp2[0]][temp2[1]].Reduire(temp2[1], temp2[0], sudoku);
@@ -178,7 +185,7 @@ public class Main {
 
 				sudoku[temp2[0]][temp2[1]].setValeur(valeur);
 				rec = true;
-				System.out.println("R�cursion avec val : " + valeur);
+				System.out.println("Récursion avec val : " + valeur);
 				AfficherC(sudoku);
 				System.out.println("======================");
 				if (RecursiveBacktracking()) {
@@ -205,15 +212,20 @@ public class Main {
 	public static boolean RemovedIV(Integer[] posCase) {
 		boolean removed = false;
 		Case[][] tempSudoku = Copie(sudoku);
-		ArrayList<Integer> tempValP=(ArrayList<Integer>) sudoku[posCase[0]][posCase[1]].getvaleursPossibles().clone();
-		for (int i : sudoku[posCase[0]][posCase[1]].getvaleursPossibles()) {
-			tempSudoku[posCase[0]][posCase[1]] = new Case(i);
-			if (tempSudoku[posCase[2]][posCase[3]].Reduire(posCase[2], posCase[3], tempSudoku).isEmpty()) {
-				tempValP.remove(tempValP.indexOf(i));
-				removed = true;
+		ArrayList<Integer> tempValP=(ArrayList<Integer>) sudoku[posCase[1]][posCase[0]].getvaleursPossibles().clone();
+		for (int i : sudoku[posCase[1]][posCase[0]].getvaleursPossibles()) {
+			tempSudoku[posCase[1]][posCase[0]] = new Case(i);
+			ArrayList<Integer> tempValJ=(ArrayList<Integer>) sudoku[posCase[3]][posCase[2]].getvaleursPossibles().clone();
+			if (tempSudoku[posCase[3]][posCase[2]].Reduire(posCase[2], posCase[3], tempSudoku).isEmpty()) {
+				tempSudoku[posCase[3]][posCase[2]].setvaleursPossibles(tempValJ);
+				if(tempValP.contains(i))
+				{
+					tempValP.remove(tempValP.indexOf(i));
+					removed = true;
+				}
 			}
 		}
-		sudoku[posCase[0]][posCase[1]].setvaleursPossibles(tempValP);
+		sudoku[posCase[1]][posCase[0]].setvaleursPossibles(tempValP);
 		return removed;
 	}
 
@@ -258,7 +270,7 @@ public class Main {
 
 	public static void main(String args[]) {
 		try {
-			chargerSudoku("Sudoku1.txt");
+			chargerSudoku("Sudoku2.txt");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
