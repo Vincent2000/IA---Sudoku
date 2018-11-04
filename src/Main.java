@@ -179,7 +179,7 @@ public class Main {
 		//Si peut affecter une valeur on fait la recursion pour continuer
 		else if (valeursPossibles.size() == 1) {
 			sudoku[temp2[0]][temp2[1]].setValeur(valeursPossibles.get(0));
-			AfficherC(sudoku);
+			//AfficherC(sudoku);
 			boolean aRetourner = RecursiveBacktracking();
 			//Si on n'est pas en recursion on arrete la
 			if (!rec)
@@ -198,9 +198,9 @@ public class Main {
 
 				sudoku[temp2[0]][temp2[1]].setValeur(valeur);
 				rec = true;
-				System.out.println("Récursion avec val : " + valeur);
-				AfficherC(sudoku);
-				System.out.println("======================");
+				//System.out.println("Récursion avec val : " + valeur);
+				//AfficherC(sudoku);
+				//System.out.println("======================");
 				if (RecursiveBacktracking()) {
 					rec = false;
 					return true;
@@ -228,11 +228,14 @@ public class Main {
 		boolean removed = false;
 		Case[][] tempSudoku = Copie(sudoku);
 		ArrayList<Integer> tempValP=(ArrayList<Integer>) sudoku[posCase[1]][posCase[0]].getvaleursPossibles().clone();
+		boolean valeurExiste=false;
+		
 		for (int i : sudoku[posCase[1]][posCase[0]].getvaleursPossibles()) {
 			tempSudoku[posCase[1]][posCase[0]] = new Case(i);
-			ArrayList<Integer> tempValJ=(ArrayList<Integer>) sudoku[posCase[3]][posCase[2]].getvaleursPossibles().clone();
-			if (tempSudoku[posCase[3]][posCase[2]].Reduire(posCase[2], posCase[3], tempSudoku).isEmpty()) {
-				tempSudoku[posCase[3]][posCase[2]].setvaleursPossibles(tempValJ);
+			for(int j : sudoku[posCase[3]][posCase[2]].getvaleursPossibles())
+				if(i!=j)
+					valeurExiste=true;
+			if (!valeurExiste) {
 				if(tempValP.contains(i))
 				{
 					tempValP.remove(tempValP.indexOf(i));
@@ -286,7 +289,7 @@ public class Main {
 
 	public static void main(String args[]) {
 		try {
-			chargerSudoku("Sudoku2.txt");
+			chargerSudoku("Sudoku4.txt");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
