@@ -67,4 +67,3 @@ public ArrayList<Integer> Reduire(int posX, int posY,Case[][]copieSudoku)
 
 
 }
-
