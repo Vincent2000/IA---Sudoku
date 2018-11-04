@@ -122,6 +122,7 @@ public class Main {
 		return posCarre;
 	}
 
+	//Renvoie la position en haut à droite du carre auquel appartient la case en posX, posY
 	public static int[] debutCarre(int posX, int posY) {
 		int[] temp = new int[2];
 		if (posX < 3)
@@ -156,31 +157,43 @@ public class Main {
 		if (Complet(sudoku)) {
 			return true;
 		}
+		//Renvoie la position du carre qui à la plus de contraintes
 		int[] temp = DH(sudoku);
+		//Renvoie la case dans ce même carre qui a le plus de contraintes
 		int[] temp2 = MRV(temp[1], temp[0], sudoku);
-		if(!rec)
-			AC3(temp2[1],temp2[0]);
+		AC3(temp2[1],temp2[0]);
+		
+		//valeursPossiblestemp sera utile lorsqu'il y a un probleme lors d'une recursion 
 		ArrayList<Integer> valeursPossiblestemp = new ArrayList<Integer>();
 		valeursPossiblestemp = (ArrayList<Integer>) (sudoku[temp2[0]][temp2[1]].getvaleursPossibles()).clone();
+		//On obtient le domaine reduit
 		ArrayList<Integer> valeursPossibles = sudoku[temp2[0]][temp2[1]].Reduire(temp2[1], temp2[0], sudoku);
+		
+		//Si on est en recursion et que le domaine reduit est zero on revient en arriere
 		if (valeursPossibles.size() == 0 && rec) {
 			sudoku[temp2[0]][temp2[1]].setvaleursPossibles(valeursPossiblestemp);
 			return false;
 		} else if (valeursPossibles.size() == 0) {
 			return false;
-		} else if (valeursPossibles.size() == 1) {
+		}
+		//Si peut affecter une valeur on fait la recursion pour continuer
+		else if (valeursPossibles.size() == 1) {
 			sudoku[temp2[0]][temp2[1]].setValeur(valeursPossibles.get(0));
 			AfficherC(sudoku);
 			boolean aRetourner = RecursiveBacktracking();
+			//Si on n'est pas en recursion on arrete la
 			if (!rec)
 				return aRetourner;
+			//Sinon on revient en arriere
 			else if (rec && !aRetourner) {
 				sudoku[temp2[0]][temp2[1]].setValeur(0);
 				sudoku[temp2[0]][temp2[1]].setvaleursPossibles(valeursPossiblestemp);
 				return aRetourner;
 			} else
 				return aRetourner;
-		} else {
+		}
+		//Si on a plusieurs valeurs possibles alors on fait une recursion pour chacune d'entre elles
+		else {
 			for (int valeur : valeursPossibles) {
 
 				sudoku[temp2[0]][temp2[1]].setValeur(valeur);
@@ -193,12 +206,14 @@ public class Main {
 					return true;
 				}
 			}
+			//Si la valeur ne fonctionne pas alors on revient en arriere
 			sudoku[temp2[0]][temp2[1]].setValeur(0);
 			sudoku[temp2[0]][temp2[1]].setvaleursPossibles(valeursPossiblestemp);
 			return false;
 		}
 	}
 
+	//Check si sudoku complet
 	public static boolean Complet(Case[][] copieSudoku) {
 		boolean aRetourner = true;
 		for (int i = 0; i < 9 && aRetourner; i++)
@@ -228,7 +243,8 @@ public class Main {
 		sudoku[posCase[1]][posCase[0]].setvaleursPossibles(tempValP);
 		return removed;
 	}
-
+	
+	//Renvoie toutes les cases vides qui ont une contrainte avec la case en posX, posY
 	public static ArrayList<Integer[]> TrouverContrainte(int posX, int posY, Case[][] copieSudoku) {
 
 		ArrayList<Integer[]> pile = new ArrayList<Integer[]>();
